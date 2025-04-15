@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import pb from "../api/pocketbase";
 import Loading from "./Loading";
 import Login from "./Login";
+import { Link } from "react-router-dom";
 
 // 定义心情数据类型
 interface MoodData {
@@ -194,6 +195,29 @@ export default function Dashboard() {
         })}
       </div>
       <Calendar completeData={data} handleSetMood={handleSetMood} />
+
+      <div className="flex justify-center mt-8">
+        <Link
+          to="/avatar"
+          className="rounded-lg bg-indigo-500 hover:bg-indigo-600 transition-colors duration-300 text-white font-medium px-6 py-3 flex items-center gap-2"
+        >
+          <span>Create Your 3D Avatar</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
+            />
+          </svg>
+        </Link>
+      </div>
     </div>
   );
 }
