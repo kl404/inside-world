@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <title>Mood - Track your daily mood</title>
+    <!-- 添加Font Awesome图标 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- 预连接Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- 添加Google Fonts - 多种方式加载以确保正常显示 -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fugaz+One&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- 强制加载字体和字体样式 -->
+    <style>
+      /* 直接导入字体 */
+      @import url("https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Fugaz+One&display=swap");
+
+      /* 强制应用字体样式 */
+      .fugaz-font {
+        font-family: "Fugaz One", cursive !important;
+        font-weight: 400 !important;
+      }
+
+      .zcool-font {
+        font-family: "ZCOOL KuaiLe", cursive !important;
+        font-weight: 400 !important;
+      }
+
+      /* 专门为h1标签设置样式 */
+      h1.zcool-font {
+        font-family: "ZCOOL KuaiLe", cursive !important;
+        font-weight: 400 !important;
+        letter-spacing: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
