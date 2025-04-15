@@ -8,8 +8,11 @@ import { AuthProvider } from "./context/AuthContext";
 import { lazy, Suspense } from "react";
 import Loading from "./components/Loading";
 
-// 使用懒加载导入AvatarCreator组件
+// 使用懒加载导入组件
+// @ts-expect-error - JSX组件没有类型定义文件
 const AvatarCreator = lazy(() => import("./components/AvatarCreator"));
+// @ts-expect-error - JSX组件没有类型定义文件
+const MusicSky = lazy(() => import("./components/MusicSky"));
 
 function App() {
   return (
@@ -22,6 +25,16 @@ function App() {
             element={
               <Suspense fallback={<Loading />}>
                 <AvatarCreator />
+              </Suspense>
+            }
+          />
+
+          {/* MusicSky路由不使用默认布局 */}
+          <Route
+            path="/music-sky"
+            element={
+              <Suspense fallback={<Loading />}>
+                <MusicSky />
               </Suspense>
             }
           />

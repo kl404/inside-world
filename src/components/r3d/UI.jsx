@@ -1,4 +1,5 @@
 import { pb, PHOTO_POSES, UI_MODES, useConfiguratorStore } from "../store";
+import { Link } from "react-router-dom";
 
 const PosesBox = ({ noscrollbarClass }) => {
   const curPose = useConfiguratorStore((state) => state.pose);
@@ -203,12 +204,9 @@ export const UI = ({ noscrollbarClass }) => {
       </div>
       <div className="mx-auto h-full max-w-screen-xl w-full flex flex-col justify-between">
         <div className="flex justify-between items-center p-10">
-          <a
-            className="pointer-events-auto"
-            href="https://lessons.wawasensei.dev/courses/react-three-fiber"
-          >
+          <Link className="pointer-events-auto" to="/dashboard">
             <img className="w-20" src="/images/wawasensei-white.png" />
-          </a>
+          </Link>
           <div className="flex items-cente gap-2">
             <RandomizeButton />
             <ScreenshotButton />
