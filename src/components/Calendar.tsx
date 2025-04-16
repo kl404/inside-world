@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { baseRating, gradients } from "../utils";
+import { Mood } from "../types/mood";
+import { CompleteData, Months, MonthName } from "../types/calendar";
 
-const months = {
+const months: Months = {
   January: "Jan",
   February: "Feb",
   March: "Mar",
@@ -29,12 +31,13 @@ const dayList = [
 
 interface CalendarProps {
   demo?: boolean;
-  completeData: any;
-  handleSetMood: (mood: number) => void;
+  completeData: CompleteData;
+  setCompleteData: React.Dispatch<React.SetStateAction<CompleteData>>;
+  selectedMood: Mood | null;
 }
 
 export default function Calendar(props: CalendarProps) {
-  const { demo, completeData, handleSetMood } = props;
+  const { demo, completeData, setCompleteData, selectedMood } = props;
   const currMonth = now.getMonth();
   const [selectedMonth, setSelectMonth] = useState(
     Object.keys(months)[currMonth]
@@ -45,17 +48,19 @@ export default function Calendar(props: CalendarProps) {
   const data = completeData?.[selectedYear]?.[numericMonth] || {};
 
   function handleIncrementMonth(val: number) {
-    // value +1 -1
-    // if we hit the bounds of the months, then we can just adjust the year that is displayed instead
+    console.log("Current month:", selectedMonth);
+    console.log("Trying to change by:", val);
+
     if (numericMonth + val < 0) {
-      // set month value = 11 and decrement the year
+      console.log("Going to previous year");
       setSelectedYear((curr) => curr - 1);
       setSelectMonth(monthsArr[monthsArr.length - 1]);
     } else if (numericMonth + val > 11) {
-      // set month val = 0 and increment the year
+      console.log("Going to next year");
       setSelectedYear((curr) => curr + 1);
       setSelectMonth(monthsArr[0]);
     } else {
+      console.log("Changing to month:", monthsArr[numericMonth + val]);
       setSelectMonth(monthsArr[numericMonth + val]);
     }
   }
@@ -84,7 +89,7 @@ export default function Calendar(props: CalendarProps) {
           }}
           className="mr-auto text-indigo-400 text-lg sm:text-xl duration-200 hover:opacity-60"
         >
-          <i className="fa-solid fa-circle-chevron-left"></i>
+          <i className="fas fa-chevron-circle-left"></i>
         </button>
         <p
           className={
@@ -99,7 +104,7 @@ export default function Calendar(props: CalendarProps) {
           }}
           className="ml-auto text-indigo-400 text-lg sm:text-xl duration-200 hover:opacity-60"
         >
-          <i className="fa-solid fa-circle-chevron-right"></i>
+          <i className="fas fa-chevron-circle-right"></i>
         </button>
       </div>
       <div className="flex flex-col overflow-hidden gap-1 py-4 sm:py-6 md:py-10">
@@ -107,26 +112,24 @@ export default function Calendar(props: CalendarProps) {
           return (
             <div key={rowIndex} className="grid grid-cols-7 gap-1">
               {dayList.map((dayOfWeek, dayOfWeekIndex) => {
-                let dayIndex =
+                const dayIndex =
                   rowIndex * 7 + dayOfWeekIndex - (firstDayOfMonth - 1);
 
-                let dayDisplay =
+                const dayDisplay =
                   dayIndex > daysInMonth
                     ? false
                     : row === 0 && dayOfWeekIndex < firstDayOfMonth
                     ? false
                     : true;
 
-                let isToday = dayIndex === now.getDate();
+                const isToday = dayIndex === now.getDate();
 
                 if (!dayDisplay) {
                   return <div className="bg-white" key={dayOfWeekIndex} />;
                 }
 
                 let color = demo
-                  ? gradients.indigo[
-                      baseRating[dayIndex as keyof typeof baseRating]
-                    ]
+                  ? gradients.indigo[baseRating[dayIndex]]
                   : dayIndex in data
                   ? gradients.indigo[data[dayIndex]]
                   : "white";
