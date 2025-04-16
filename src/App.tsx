@@ -13,12 +13,24 @@ import Loading from "./components/Loading";
 const AvatarCreator = lazy(() => import("./components/AvatarCreator"));
 // @ts-expect-error - JSX组件没有类型定义文件
 const MusicSky = lazy(() => import("./components/MusicSky"));
+// @ts-expect-error - JSX组件没有类型定义文件
+const ModelTest = lazy(() => import("./components/ModelTest"));
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
+          {/* ModelTest路由 */}
+          <Route
+            path="/model-test"
+            element={
+              <Suspense fallback={<Loading />}>
+                <ModelTest />
+              </Suspense>
+            }
+          />
+
           {/* AvatarCreator路由不使用默认布局 */}
           <Route
             path="/avatar"

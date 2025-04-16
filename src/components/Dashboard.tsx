@@ -71,10 +71,8 @@ export default function Dashboard() {
       // 检查记录是否已存在
       try {
         // 尝试查找该用户当天的心情记录
-        const records = await pb.collection("moods").getList(1, 1000, {
-          filter: `user="${currentUser.id}" && year="${year}" && month="${(
-            parseInt(month) + 1
-          ).toString()}" && day="${day}"`,
+        const records = await pb.collection("moods").getList(1, 1, {
+          filter: `user="${currentUser.id}" && year="${year}" && month="${month}" && day="${day}"`,
         });
 
         if (records.items.length > 0) {
@@ -109,7 +107,7 @@ export default function Dashboard() {
 
     async function loadUserMoods() {
       try {
-        const records = await pb.collection("moods").getList(1, 10000, {
+        const records = await pb.collection("moods").getList(1, 200, {
           filter: `user="${currentUser.id}"`,
         });
 
@@ -118,17 +116,16 @@ export default function Dashboard() {
 
         records.items.forEach((record) => {
           const { year, month, day, mood } = record;
-          const jsMonth = (parseInt(month) - 1).toString(); // 将1-12的月份转换为0-11
 
           if (!moodData[year]) {
             moodData[year] = {};
           }
 
-          if (!moodData[year][jsMonth]) {
-            moodData[year][jsMonth] = {};
+          if (!moodData[year][month]) {
+            moodData[year][month] = {};
           }
 
-          moodData[year][jsMonth][day] = mood;
+          moodData[year][month][day] = mood;
         });
 
         setData(moodData);

@@ -9,7 +9,7 @@ import { Asset } from "./Asset";
 export const Avatar = ({ ...props }) => {
   const group = useRef();
   const { nodes } = useGLTF("/models/Armature.glb");
-  const { animations } = useGLTF("/models/Poses.glb");
+  const { animations } = useGLTF("/models/test.glb");
   const customization = useConfiguratorStore((state) => state.customization);
   const { actions } = useAnimations(animations, group);
   const setDownload = useConfiguratorStore((state) => state.setDownload);
