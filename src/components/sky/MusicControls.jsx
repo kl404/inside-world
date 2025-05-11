@@ -1,25 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import styles from "./MusicControls.module.css";
 
 // 预定义的音乐列表
 const musicList = [
   {
     id: 1,
-    title: "星空之梦",
-    artist: "轻音乐",
-    file: "https://assets.mixkit.co/music/preview/mixkit-dreaming-big-31.mp3",
-  },
-  {
-    id: 2,
-    title: "夜晚旋律",
-    artist: "轻音乐",
-    file: "https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3",
-  },
-  {
-    id: 3,
-    title: "宁静时刻",
-    artist: "轻音乐",
-    file: "https://assets.mixkit.co/music/preview/mixkit-spirit-lifter-332.mp3",
+    title: "Lucy Liu",
+    artist: "bronx",
+    file: "/mp3/Lucy Liu.mp3",
   },
 ];
 
@@ -32,12 +20,60 @@ const MusicControls = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const audioRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const sourceNodeRef = useRef(null);
+
+  // 初始化音频分析器
+  const initializeAudioAnalyser = useCallback(() => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext ||
+        window.webkitAudioContext)();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      analyserRef.current.fftSize = 2048; // FFT大小，决定了频率数据的精度
+
+      // 连接音频节点
+      sourceNodeRef.current = audioContextRef.current.createMediaElementSource(
+        audioRef.current
+      );
+      sourceNodeRef.current.connect(analyserRef.current);
+      analyserRef.current.connect(audioContextRef.current.destination);
+    }
+  }, []);
+
+  // 获取音频数据
+  const getAudioData = useCallback(() => {
+    if (!analyserRef.current || !isPlaying) return null;
+
+    const bufferLength = analyserRef.current.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    // 获取频率数据
+    analyserRef.current.getByteFrequencyData(dataArray);
+
+    // 计算低、中、高频能量
+    const bassEnergy = dataArray.slice(0, 20).reduce((a, b) => a + b) / 20;
+    const midEnergy = dataArray.slice(20, 60).reduce((a, b) => a + b) / 40;
+    const trebleEnergy = dataArray.slice(60, 100).reduce((a, b) => a + b) / 40;
+
+    return {
+      frequencyData: Array.from(dataArray),
+      bassEnergy,
+      midEnergy,
+      trebleEnergy,
+      volume: dataArray.reduce((a, b) => a + b) / bufferLength,
+    };
+  }, [isPlaying]);
 
   // 处理播放/暂停
   const togglePlay = () => {
     if (isPlaying) {
       audioRef.current.pause();
     } else {
+      // 确保音频上下文已初始化
+      if (!audioContextRef.current) {
+        initializeAudioAnalyser();
+      }
       audioRef.current.play();
     }
     setIsPlaying(!isPlaying);
@@ -111,6 +147,32 @@ const MusicControls = () => {
       }
     }
   }, [currentTrack]);
+
+  // 动画帧更新
+  useEffect(() => {
+    let animationFrameId;
+
+    const updateAudioData = () => {
+      const audioData = getAudioData();
+      if (audioData) {
+        // 发送自定义事件，包含音频数据
+        window.dispatchEvent(
+          new CustomEvent("audioData", { detail: audioData })
+        );
+      }
+      animationFrameId = requestAnimationFrame(updateAudioData);
+    };
+
+    if (isPlaying) {
+      updateAudioData();
+    }
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [isPlaying, getAudioData]);
 
   return (
     <div

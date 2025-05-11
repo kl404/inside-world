@@ -15,10 +15,10 @@ export default function Hero() {
       <div className="flex justify-center gap-4">
         <Elf />
         <div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl text-center w-full mx-auto max-w-[600px] mb-16 pt-4">
-            Create your mood record and see how you feel{" "}
-            <span className="font-semibold">on every day of every year.</span>
-          </h2>
+        <h2 className="text-xl sm:text-2xl md:text-3xl text-center w-full mx-auto max-w-[600px] mb-16 pt-4">
+  Build your emotional history and see your inner world change{" "}
+  <span className="font-semibold">day by day, all year long.</span>
+</h2>
           <CallToAction />
         </div>
       </div>

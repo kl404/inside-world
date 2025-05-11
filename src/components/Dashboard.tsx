@@ -35,7 +35,7 @@ export default function Dashboard() {
     }
     return {
       num_days: total_number_of_days,
-      average_mood: sum_moods / total_number_of_days || 0,
+      average_mood: (sum_moods / total_number_of_days || 0).toFixed(4),
     };
   }
 
@@ -171,8 +171,8 @@ export default function Dashboard() {
         })}
       </div>
       <h4 className="text-5xl sm:text-6xl md:text-7xl text-center fugaz-font">
-        How are you <span className="textGradient">feeling</span> today?
-      </h4>
+  What's your <span className="textGradient">vibe</span> right now?
+</h4>
       <div className="flex items-stretch flex-wrap gap-4">
         {Object.keys(moods).map((mood, moodIndex) => {
           return (
