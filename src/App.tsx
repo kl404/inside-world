@@ -15,6 +15,17 @@ const AvatarCreator = lazy(() => import("./components/AvatarCreator"));
 const MusicSky = lazy(() => import("./components/MusicSky"));
 
 
+// 受保护的路由组件
+function ProtectedRoute({ children }: { children: JSX.Element }) {
+  const { currentUser } = useContext(AuthContext);
+  
+  if (!currentUser) {
+    return <Navigate to="/" />;
+  }
+  
+  return children;
+}
+
 function App() {
   return (
     <AuthProvider>

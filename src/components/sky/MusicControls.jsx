@@ -6,7 +6,7 @@ const musicList = [
   {
     id: 1,
     title: "Lucy Liu",
-    artist: "bronx",
+    artist: "PSY.P",
     file: "/mp3/Lucy Liu.mp3",
   },
 ];
