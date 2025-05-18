@@ -1,38 +1,25 @@
 import { Canvas } from "@react-three/fiber";
-import { Bloom, EffectComposer } from "@react-three/postprocessing";
-import { Leva } from "leva";
-import { DEFAULT_CAMERA_POSITION } from "./r3d/CameraManager";
 import { Experience } from "./r3d/Experience";
 import { UI } from "./r3d/UI";
-import styles from "./AvatarCreator.module.css";
 import React from "react";
 
 export default function AvatarCreator(): React.ReactElement {
   return (
-    <div className={styles.avatarCreator}>
-      <Leva hidden />
-      <UI noscrollbarClass={styles.noscrollbar} />
-      <div className={styles.canvasContainer}>
-        <Canvas
-          camera={{
-            position: DEFAULT_CAMERA_POSITION,
-            fov: 45,
-          }}
-          gl={{
-            preserveDrawingBuffer: true,
-          }}
-          shadows
-        >
-          <color attach="background" args={["#130f30"]} />
-          <fog attach="fog" args={["#130f30", 10, 40]} />
-          <group position-y={-1}>
-            <Experience />
-          </group>
-          <EffectComposer>
-            <Bloom mipmapBlur luminanceThreshold={1.2} intensity={1.2} />
-          </EffectComposer>
-        </Canvas>
-      </div>
-    </div>
+    <div style={{ height: "100vh", width: "100vw" }}>
+    <UI />
+    <Canvas
+      camera={{
+        position: [-1, 1, 5],
+        fov: 45,
+      }}
+      shadows
+    >
+      <color attach="background" args={["#555"]} />
+      <fog attach="fog" args={["#555", 15, 25]} />
+      <group position-y={-1}>
+        <Experience />
+      </group>
+    </Canvas>
+  </div>
   );
 }

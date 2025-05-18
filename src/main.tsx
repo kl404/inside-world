@@ -8,7 +8,5 @@ import "@fontsource/fugaz-one";
 import "@fontsource/zcool-kuaile";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
     <App />
-  </React.StrictMode>
 );

@@ -3,7 +3,7 @@ import PocketBase from "pocketbase";
 import { Color, MeshStandardMaterial } from "three";
 import { randInt } from "three/src/math/MathUtils.js";
 
-const pocketBaseUrl = "https://pocketbase-u4.vm.elestio.app";
+const pocketBaseUrl = "http://127.0.0.1:8090";
 if (!pocketBaseUrl) {
   throw new Error("VITE_POCKETBASE_URL is required");
 }
@@ -80,8 +80,6 @@ export interface ConfiguratorState {
   lockedGroups: Record<string, LockedGroupInfo[]>;
   skin: MeshStandardMaterial;
   customization: Customization;
-  download: () => void;
-  setDownload: (download: () => void) => void;
   screenshot: () => void;
   setScreenshot: (screenshot: () => void) => void;
   updateColor: (color: string) => void;
@@ -112,8 +110,6 @@ export const useConfiguratorStore = create<ConfiguratorState>((set, get) => ({
   lockedGroups: {},
   skin: new MeshStandardMaterial({ color: 0xf5c6a5, roughness: 1 }),
   customization: {},
-  download: () => {},
-  setDownload: (download) => set({ download }),
   screenshot: () => {},
   setScreenshot: (screenshot) => set({ screenshot }),
   updateColor: (color) => {
@@ -140,7 +136,7 @@ export const useConfiguratorStore = create<ConfiguratorState>((set, get) => ({
       expand: "colorPalette,cameraPlacement",
     });
     const assets = await pb.collection("CustomizationAssets").getFullList({
-      sort: "-created",
+      sort: "+created",
     });
     const customization: Customization = {};
     categories.forEach((category: any) => {

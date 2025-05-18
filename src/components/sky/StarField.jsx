@@ -35,29 +35,59 @@ function StarField() {
       );
     };
 
-    // 创建中心球体的点
-    for (let i = 0; i < 50000; i++) {
-      const point = new THREE.Vector3()
-        .randomDirection()
-        .multiplyScalar(Math.random() * 0.5 + 9.5);
-      positions.push(point.x, point.y, point.z);
+    // 创建中心星云形状
+    for (let i = 0; i < 10000; i++) {
+      // 创建螺旋星云效果
+      const angle = Math.random() * Math.PI * 20;
+      const radius = Math.random() * 3 + 7; // 调整内核大小
+      const height = (Math.random() - 0.5) * 2;
+      
+      // 添加螺旋臂扭曲
+      const twist = 0.5;
+      const armWidth = 0.3;
+      const arms = 3; // 螺旋臂数量
+      
+      const spiralFactor = Math.sin(angle * arms) * armWidth;
+      const finalRadius = radius * (1 + spiralFactor);
+      
+      const x = Math.cos(angle + radius * twist) * finalRadius;
+      const y = height * (1 + Math.sin(angle * 0.5) * 0.2); // 波浪状高度变化
+      const z = Math.sin(angle + radius * twist) * finalRadius;
+      
+      positions.push(x, y, z);
       sizes.push(Math.random() * 1.5 + 0.5);
       pushShift();
     }
 
-    // 创建外围的点
+    // 创建外围星云结构
     for (let i = 0; i < 100000; i++) {
-      const r = 10,
-        R = 40;
-      const rand = Math.pow(Math.random(), 1.5);
-      const radius = Math.sqrt(R * R * rand + (1 - rand) * r * r);
-      const point = new THREE.Vector3().setFromCylindricalCoords(
-        radius,
-        Math.random() * 2 * Math.PI,
-        (Math.random() - 0.5) * 2
-      );
-      positions.push(point.x, point.y, point.z);
-      sizes.push(Math.random() * 1.5 + 0.5);
+      // 基础参数
+      const r = 10, R = 40;
+      
+      // 创建不规则的外围结构
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI - Math.PI/2;
+      
+      // 添加一些不规则性
+      const distortion = 1 + Math.sin(theta * 5) * 0.2 + Math.cos(phi * 3) * 0.3;
+      
+      // 使用幂律分布创建更自然的密度梯度
+      const rand = Math.pow(Math.random(), 1.3);
+      const radius = Math.sqrt(R * R * rand + (1 - rand) * r * r) * distortion;
+      
+      // 创建略微扁平的椭球体
+      const flatness = 0.4; // 扁平程度
+      const x = radius * Math.cos(theta) * Math.cos(phi);
+      const y = radius * Math.sin(phi) * flatness;
+      const z = radius * Math.sin(theta) * Math.cos(phi);
+      
+      positions.push(x, y, z);
+      
+      // 根据位置调整大小
+      const distanceFromCenter = Math.sqrt(x*x + y*y + z*z);
+      const sizeVariation = 1 - Math.min(1, Math.max(0, (distanceFromCenter - r) / (R - r))) * 0.5;
+      sizes.push(Math.random() * 1.5 * sizeVariation + 0.5);
+      
       pushShift();
     }
 
@@ -113,16 +143,16 @@ function StarField() {
           float d = length(abs(position) / vec3(40.0, 10.0, 40.0));
           d = clamp(d, 0.0, 1.0);
           
-          // 使用音量影响颜色
+          // 使用音量影响颜色 - 互换初始颜色和音频响应颜色
           vec3 colorA = mix(
-            vec3(0.89, 0.61, 0.0),
-            vec3(1.0, 0.2, 0.2),
+            vec3(1.0, 0.2, 0.2),    // 红色（原来是音频响应颜色）
+            vec3(0.89, 0.61, 0.0),  // 橙黄色（原来是初始颜色）
             volume * 0.01
           );
           
           vec3 colorB = mix(
-            vec3(0.39, 0.20, 1.0),
-            vec3(0.2, 0.8, 1.0),
+            vec3(0.2, 0.8, 1.0),    // 天蓝色（原来是音频响应颜色）
+            vec3(0.39, 0.20, 1.0),  // 蓝紫色（原来是初始颜色）
             volume * 0.01
           );
           
