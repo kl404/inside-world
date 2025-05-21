@@ -1,21 +1,20 @@
 import { pb, PHOTO_POSES, UI_MODES, useConfiguratorStore } from "../store";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
+import SaveButton from "./SaveButton";
 
 const AssetsBox = () => {
   const {
     categories,
     currentCategory,
-    fetchCategories,
     setCurrentCategory,
     changeAsset,
     customization,
     lockedGroups,
   } = useConfiguratorStore();
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  // 移除这里的 fetchCategories 调用，因为已经在 UI 组件中处理了
   return (
     <div className="rounded-t-lg bg-gradient-to-br from-black/30 to-indigo-900/20  backdrop-blur-sm drop-shadow-md flex flex-col py-6 gap-3 overflow-hidden ">
       <div className="flex items-center gap-8 pointer-events-auto overflow-x-auto noscrollbar px-6 pb-2">
@@ -153,18 +152,41 @@ export const UI = () => {
   const currentCategory = useConfiguratorStore(
     (state) => state.currentCategory
   );
+  console.log(currentCategory, '??@')
   const customization = useConfiguratorStore((state) => state.customization);
+  const loadUserAvatar = useConfiguratorStore((state) => state.loadUserAvatar);
+  const fetchCategories = useConfiguratorStore(
+    (state) => state.fetchCategories
+  );
+  const { currentUser } = useAuth();
+
+  // 先加载类别，然后加载用户配置
+  useEffect(() => {
+    const loadData = async () => {
+      // 先加载类别
+      await fetchCategories();
+
+      // 然后加载用户配置
+      if (currentUser) {
+        await loadUserAvatar(currentUser.id);
+      }
+    };
+
+    loadData();
+  }, [currentUser, loadUserAvatar, fetchCategories]);
+
   return (
     <main className="pointer-events-none fixed z-10 inset-0 select-none">
       <div className="mx-auto h-full max-w-screen-xl w-full flex flex-col justify-between">
         <div className="flex justify-between items-center p-10">
           <Link className="pointer-events-auto" to="/dashboard">
-            <img className="w-20" src="/images/wawasensei-white.png" />
+            <img className="w-20" src="/images/kuromi.png" />
           </Link>
-          <div className="flex items-cente gap-2">
+          <div className="flex items-center gap-2">
             <RandomizeButton />
             <CasualButton />
             <EdgyButton />
+            <SaveButton />
           </div>
         </div>
         <div className="px-10 flex flex-col">

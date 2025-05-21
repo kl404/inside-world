@@ -3,6 +3,7 @@ import styles from "./MusicSky.module.css";
 import SkyScene from "./sky/SkyScene";
 import MusicControls from "./sky/MusicControls";
 import { Link } from "react-router-dom";
+import Loading from "./Loading";
 
 export default function MusicSky(): React.ReactElement {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -11,7 +12,7 @@ export default function MusicSky(): React.ReactElement {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000); // 2秒后显示内容
+    }, 300); // 2秒后显示内容
 
     return () => clearTimeout(timer);
   }, []);
@@ -19,14 +20,8 @@ export default function MusicSky(): React.ReactElement {
   return (
     <div className={styles.musicSkyContainer}>
       {/* 加载状态 */}
-      {isLoading && (
-        <div className={styles.loadingOverlay}>
-          <div className={styles.loadingContent}>
-            <h2>halo~~...</h2>
-            <div className={styles.spinner}></div>
-          </div>
-        </div>
-      )}
+      {isLoading && <Loading/>
+      }
 
       {/* 返回按钮 */}
       <Link to="/dashboard" className={styles.backButton}>

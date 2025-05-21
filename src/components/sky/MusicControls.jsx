@@ -7,7 +7,7 @@ const musicList = [
     id: 1,
     title: "Lucy Liu",
     artist: "bronx",
-    file: "/mp3/Lucy Liu.mp3",
+    file: "/mp3/test.mp3",
   },
 ];
 
@@ -156,6 +156,7 @@ const MusicControls = () => {
       const audioData = getAudioData();
       if (audioData) {
         // 发送自定义事件，包含音频数据
+        
         window.dispatchEvent(
           new CustomEvent("audioData", { detail: audioData })
         );

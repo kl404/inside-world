@@ -25,69 +25,49 @@ function StarField() {
     const sizes = [];
     const shifts = [];
 
-    // 创建移动函数
+    // 创建移动函数 - 极度简化版
+    // 只存储一个简单的移动速度和一个移动幅度
     const pushShift = () => {
       shifts.push(
-        Math.random() * Math.PI,
-        Math.random() * Math.PI * 2,
-        (Math.random() * 0.9 + 0.1) * Math.PI * 0.1,
-        Math.random() * 0.9 + 0.1
+        Math.random(), // 第一个值：随机的起始位置 (0-1)
+        0,            // 第二个值：不使用，设为0
+        0,            // 第三个值：不使用，设为0
+        Math.random() * 0.5 + 0.5 // 第四个值：随机的移动幅度 (0.5-1)
       );
     };
-
-    // 创建中心星云形状
-    for (let i = 0; i < 10000; i++) {
-      // 创建螺旋星云效果
-      const angle = Math.random() * Math.PI * 20;
-      const radius = Math.random() * 3 + 7; // 调整内核大小
-      const height = (Math.random() - 0.5) * 2;
-      
-      // 添加螺旋臂扭曲
-      const twist = 0.5;
-      const armWidth = 0.3;
-      const arms = 3; // 螺旋臂数量
-      
-      const spiralFactor = Math.sin(angle * arms) * armWidth;
-      const finalRadius = radius * (1 + spiralFactor);
-      
-      const x = Math.cos(angle + radius * twist) * finalRadius;
-      const y = height * (1 + Math.sin(angle * 0.5) * 0.2); // 波浪状高度变化
-      const z = Math.sin(angle + radius * twist) * finalRadius;
-      
-      positions.push(x, y, z);
-      sizes.push(Math.random() * 1.5 + 0.5);
-      pushShift();
-    }
 
     // 创建外围星云结构
     for (let i = 0; i < 100000; i++) {
       // 基础参数
-      const r = 10, R = 40;
-      
+      const r = 10,
+        R = 40;
+
       // 创建不规则的外围结构
       const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI - Math.PI/2;
-      
+      const phi = Math.random() * Math.PI - Math.PI / 2;
+
       // 添加一些不规则性
-      const distortion = 1 + Math.sin(theta * 5) * 0.2 + Math.cos(phi * 3) * 0.3;
-      
+      const distortion =
+        1 + Math.sin(theta * 5) * 0.2 + Math.cos(phi * 3) * 0.3;
+
       // 使用幂律分布创建更自然的密度梯度
       const rand = Math.pow(Math.random(), 1.3);
       const radius = Math.sqrt(R * R * rand + (1 - rand) * r * r) * distortion;
-      
+
       // 创建略微扁平的椭球体
       const flatness = 0.4; // 扁平程度
       const x = radius * Math.cos(theta) * Math.cos(phi);
       const y = radius * Math.sin(phi) * flatness;
       const z = radius * Math.sin(theta) * Math.cos(phi);
-      
+
       positions.push(x, y, z);
-      
+
       // 根据位置调整大小
-      const distanceFromCenter = Math.sqrt(x*x + y*y + z*z);
-      const sizeVariation = 1 - Math.min(1, Math.max(0, (distanceFromCenter - r) / (R - r))) * 0.5;
+      const distanceFromCenter = Math.sqrt(x * x + y * y + z * z);
+      const sizeVariation =
+        1 - Math.min(1, Math.max(0, (distanceFromCenter - r) / (R - r))) * 0.5;
       sizes.push(Math.random() * 1.5 * sizeVariation + 0.5);
-      
+
       pushShift();
     }
 
@@ -124,18 +104,18 @@ function StarField() {
           vec3 pos = position;
           float t = time;
           
-          // 使用低频能量影响星星的位置
-          float moveT = mod(shift.x + shift.z * t + bassEnergy * 0.01, 6.28318530718);
-          float moveS = mod(shift.y + shift.z * t + midEnergy * 0.01, 6.28318530718);
+          // 超级简单的粒子运动 - 纯粹的上下移动
+          // shift.x: 随机的起始位置
+          // shift.w: 随机的移动幅度
           
-          // 使用高频能量影响移动幅度
-          float amplitude = shift.w * (1.0 + trebleEnergy * 0.01);
+          // 简单的正弦波上下移动
+          float upDown = sin(t + shift.x * 10.0) * 0.5;
           
-          pos += vec3(
-            cos(moveS) * sin(moveT),
-            cos(moveT),
-            sin(moveS) * sin(moveT)
-          ) * amplitude;
+          // 音量影响移动幅度
+          float moveAmount = upDown * shift.w * (1.0 + volume * 0.01);
+          
+          // 只做简单的上下移动
+          pos.y += moveAmount;
           
           vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
           gl_Position = projectionMatrix * mvPosition;

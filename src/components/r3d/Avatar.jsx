@@ -3,10 +3,10 @@ import { Suspense, useEffect, useRef } from "react";
 import { pb, useConfiguratorStore } from "../store";
 import { Asset } from "./Asset";
 
-export const Avatar = ({ ...props }) => {
+export const Avatar = ({ animationPath = "/models/Idle.fbx", ...props }) => {
   const group = useRef();
   const { nodes } = useGLTF("/models/Armature.glb");
-  const { animations } = useFBX("/models/Idle.fbx");
+  const { animations } = useFBX(animationPath);
   const customization = useConfiguratorStore((state) => state.customization);
   const { actions } = useAnimations(animations, group);
   useEffect(() => {
