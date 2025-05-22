@@ -26,13 +26,11 @@ function StarField() {
     const shifts = [];
 
     // 创建移动函数 - 极度简化版
-    // 只存储一个简单的移动速度和一个移动幅度
+    // 只存储随机起始位置和移动幅度两个值
     const pushShift = () => {
       shifts.push(
         Math.random(), // 第一个值：随机的起始位置 (0-1)
-        0,            // 第二个值：不使用，设为0
-        0,            // 第三个值：不使用，设为0
-        Math.random() * 0.5 + 0.5 // 第四个值：随机的移动幅度 (0.5-1)
+        Math.random() * 0.5 + 0.5 // 第二个值：随机的移动幅度 (0.5-1)
       );
     };
 
@@ -97,7 +95,7 @@ function StarField() {
         uniform float trebleEnergy;
         uniform float volume;
         attribute float sizes;
-        attribute vec4 shift;
+        attribute vec2 shift;
         varying vec3 vColor;
         
         void main() {
@@ -106,13 +104,13 @@ function StarField() {
           
           // 超级简单的粒子运动 - 纯粹的上下移动
           // shift.x: 随机的起始位置
-          // shift.w: 随机的移动幅度
+          // shift.y: 随机的移动幅度
           
           // 简单的正弦波上下移动
           float upDown = sin(t + shift.x * 10.0) * 0.5;
           
           // 音量影响移动幅度
-          float moveAmount = upDown * shift.w * (1.0 + volume * 0.01);
+          float moveAmount = upDown * shift.y * (1.0 + volume * 0.01);
           
           // 只做简单的上下移动
           pos.y += moveAmount;
@@ -123,16 +121,16 @@ function StarField() {
           float d = length(abs(position) / vec3(40.0, 10.0, 40.0));
           d = clamp(d, 0.0, 1.0);
           
-          // 使用音量影响颜色 - 互换初始颜色和音频响应颜色
+          // 使用音量影响颜色
           vec3 colorA = mix(
-            vec3(1.0, 0.2, 0.2),    // 红色（原来是音频响应颜色）
-            vec3(0.89, 0.61, 0.0),  // 橙黄色（原来是初始颜色）
+            vec3(1.0, 0.2, 0.2),    // 红色
+            vec3(0.89, 0.61, 0.0),  // 橙黄色
             volume * 0.01
           );
           
           vec3 colorB = mix(
-            vec3(0.2, 0.8, 1.0),    // 天蓝色（原来是音频响应颜色）
-            vec3(0.39, 0.20, 1.0),  // 蓝紫色（原来是初始颜色）
+            vec3(0.2, 0.8, 1.0),    // 天蓝色
+            vec3(0.39, 0.20, 1.0),  // 蓝紫色
             volume * 0.01
           );
           
@@ -186,9 +184,9 @@ function StarField() {
         />
         <bufferAttribute
           attach="attributes-shift"
-          count={shifts.length / 4}
+          count={shifts.length / 2}
           array={shifts}
-          itemSize={4}
+          itemSize={2}
         />
       </bufferGeometry>
     </points>

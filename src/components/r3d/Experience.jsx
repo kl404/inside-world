@@ -22,9 +22,7 @@ export const Experience = () => {
       <Backdrop scale={[50, 10, 5]} floor={1.5} receiveShadow position-z={-4}>
         <meshStandardMaterial color="#555" />
       </Backdrop>
-
       <SoftShadows size={52} samples={16} />
-
       {/* Key Light */}
       <directionalLight
         position={[5, 5, 5]}
