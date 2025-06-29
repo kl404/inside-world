@@ -5,9 +5,15 @@ import styles from "./MusicControls.module.css";
 const musicList = [
   {
     id: 1,
-    title: "Lucy Liu",
-    artist: "Psy P",
-    file: "/mp3/test.mp3",
+    title: "Head In The Clouds",
+    artist: "Hayd",
+    file: "/mp3/Head In The Clouds.mp3",
+  },
+  {
+    id: 2,
+    title: "River Flows In You",
+    artist: "Yiruma",
+    file: "/mp3/river.mp3",
   },
 ];
 

@@ -194,7 +194,7 @@ export default function Dashboard() {
           );
         })}
       </div>
-      <Calendar completeData={data} handleSetMood={handleSetMood} />
+      <Calendar completeData={data}/>
 
       <div className="flex flex-col gap-4 items-center mt-8">
         <Link

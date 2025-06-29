@@ -34,10 +34,10 @@ function StarField() {
       );
     };
 
-    // 创建外围星云结构
-    for (let i = 0; i < 100000; i++) {
+    // 创建星云结构
+    for (let i = 0; i < 300000; i++) {
       // 基础参数
-      const r = 10,
+      const r = 20,
         R = 40;
 
       // 创建不规则的外围结构
@@ -97,28 +97,32 @@ function StarField() {
         attribute float sizes;
         attribute vec2 shift;
         varying vec3 vColor;
-        
-        void main() {
+          void main() {
           vec3 pos = position;
           float t = time;
           
-          // 超级简单的粒子运动 - 纯粹的上下移动
+          // 多维度粒子运动 - 不同频段影响不同方向
           // shift.x: 随机的起始位置
           // shift.y: 随机的移动幅度
           
-          // 简单的正弦波上下移动
-          float upDown = sin(t + shift.x * 10.0) * 0.5;
+          // 低频(bassEnergy) - 影响Y轴(上下)运动，慢速大幅度
+          float bassMovement = sin(t * 0.8 + shift.x * 8.0) * 0.6;
+          pos.y += bassMovement * shift.y * (1.0 + bassEnergy * 0.02);
           
-          // 音量影响移动幅度
-          float moveAmount = upDown * shift.y * (1.0 + volume * 0.01);
+          // 中频(midEnergy) - 影响X轴(左右)运动，中等速度
+          float midMovement = sin(t * 1.2 + shift.x * 12.0) * 0.4;
+          pos.x += midMovement * shift.y * (1.0 + midEnergy * 0.015);
           
-          // 只做简单的上下移动
-          pos.y += moveAmount;
+          // 高频(trebleEnergy) - 影响Z轴(前后)运动，快速小幅度
+          float trebleMovement = sin(t * 2.0 + shift.x * 15.0) * 0.3;
+          pos.z += trebleMovement * shift.y * (1.0 + trebleEnergy * 0.01);
+          
+          // 总音量影响整体运动幅度
+          pos *= (1.0 + volume * 0.0004);
           
           vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
           gl_Position = projectionMatrix * mvPosition;
-          
-          float d = length(abs(position) / vec3(40.0, 10.0, 40.0));
+            float d = length(abs(position) / vec3(40.0, 10.0, 40.0));
           d = clamp(d, 0.0, 1.0);
           
           // 使用音量影响颜色

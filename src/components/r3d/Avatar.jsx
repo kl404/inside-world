@@ -5,7 +5,9 @@ import { Asset } from "./Asset";
 
 export const Avatar = ({ animationPath = "/models/Idle.fbx", ...props }) => {
   const group = useRef();
-  const { nodes } = useGLTF("/models/Armature.glb");
+  const a = useGLTF("/models/Armature.glb");
+  const { nodes } = a;
+  console.log(a, '最外面Avatar这里的')
   const { animations } = useFBX(animationPath);
   const customization = useConfiguratorStore((state) => state.customization);
   const { actions } = useAnimations(animations, group);

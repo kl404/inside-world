@@ -20,9 +20,9 @@ const SaveButton = () => {
     try {
       const success = await saveUserAvatar(currentUser.id);
       if (success) {
-        setSaveStatus('保存成功');
+        setSaveStatus('Success');
       } else {
-        setSaveStatus('保存失败');
+        setSaveStatus('Failed...');
       }
     } catch (error) {
       console.error('保存头像失败:', error);

@@ -3,7 +3,9 @@ import { useEffect, useMemo } from "react";
 import { useConfiguratorStore } from "../store";
 
 export const Asset = ({ url, categoryName, skeleton }) => {
-  const { scene } = useGLTF(url);
+  const a = useGLTF(url);
+  const scene = a.scene;
+  console.log(a, ' @@##??');
 
   const customization = useConfiguratorStore((state) => state.customization);
   const lockedGroups = useConfiguratorStore((state) => state.lockedGroups);
