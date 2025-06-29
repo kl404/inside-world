@@ -25,163 +25,49 @@ function StarField() {
     const sizes = [];
     const shifts = [];
 
-    // 创建移动函数
+    // 创建移动函数 - 极度简化版
+    // 只存储随机起始位置和移动幅度两个值
     const pushShift = () => {
       shifts.push(
-        Math.random() * Math.PI,
-        Math.random() * Math.PI * 2,
-        (Math.random() * 0.9 + 0.1) * Math.PI * 0.1,
-        Math.random() * 0.9 + 0.1
+        Math.random(), // 第一个值：随机的起始位置 (0-1)
+        Math.random() * 0.5 + 0.5 // 第二个值：随机的移动幅度 (0.5-1)
       );
     };
 
-    // 创建蝴蝶花形态
-    const createButterflySculpture = () => {
-      // 蝴蝶花瓣数
-      const petalCount = 5;
-      // 每个花瓣上的点数
-      const pointsPerPetal = 300;
-      // 花朵的基本大小
-      const baseSize = 15;
-      // 花朵的层数
-      const layers = 7;
+    // 创建星云结构
+    for (let i = 0; i < 300000; i++) {
+      // 基础参数
+      const r = 20,
+        R = 40;
 
-      // 对每层创建花朵
-      for (let layer = 0; layer < layers; layer++) {
-        // 每层的大小和高度
-        const layerSize = baseSize * (1 - 0.1 * layer);
-        const layerHeight = layer * 5 - 15;
+      // 创建不规则的外围结构
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI - Math.PI / 2;
 
-        // 为每个花瓣创建点
-        for (let petal = 0; petal < petalCount; petal++) {
-          const petalAngle = (petal / petalCount) * Math.PI * 2;
+      // 添加一些不规则性
+      const distortion =
+        1 + Math.sin(theta * 5) * 0.2 + Math.cos(phi * 3) * 0.3;
 
-          for (let i = 0; i < pointsPerPetal; i++) {
-            // 使用参数方程创建花瓣形状
-            const t = (i / pointsPerPetal) * Math.PI;
+      // 使用幂律分布创建更自然的密度梯度
+      const rand = Math.pow(Math.random(), 1.3);
+      const radius = Math.sqrt(R * R * rand + (1 - rand) * r * r) * distortion;
 
-            // 蝴蝶曲线参数方程（修改自蝴蝶曲线）
-            const r =
-              layerSize * Math.exp(Math.cos(t)) -
-              2 * Math.cos(4 * t) +
-              Math.pow(Math.sin(t / 12), 5) * Math.sin(petalAngle);
+      // 创建略微扁平的椭球体
+      const flatness = 0.4; // 扁平程度
+      const x = radius * Math.cos(theta) * Math.cos(phi);
+      const y = radius * Math.sin(phi) * flatness;
+      const z = radius * Math.sin(theta) * Math.cos(phi);
 
-            const theta = t + petalAngle;
+      positions.push(x, y, z);
 
-            const x = r * Math.cos(theta);
-            const z = r * Math.sin(theta);
-            const y = layerHeight + Math.sin(t * 3) * 2; // 增加一些波动
+      // 根据位置调整大小
+      const distanceFromCenter = Math.sqrt(x * x + y * y + z * z);
+      const sizeVariation =
+        1 - Math.min(1, Math.max(0, (distanceFromCenter - r) / (R - r))) * 0.5;
+      sizes.push(Math.random() * 1.5 * sizeVariation + 0.5);
 
-            positions.push(x, y, z);
-            sizes.push(Math.random() * 0.8 + 0.4);
-            pushShift();
-          }
-        }
-      }
-    };
-
-    // 创建涟漪波纹
-    const createRipples = () => {
-      // 涟漪圈数
-      const rippleCount = 12;
-      // 每圈的点数
-      const pointsPerRipple = 500;
-      // 涟漪的最大半径
-      const maxRadius = 40;
-
-      for (let ripple = 0; ripple < rippleCount; ripple++) {
-        const radius = (ripple / rippleCount) * maxRadius;
-
-        for (let i = 0; i < pointsPerRipple; i++) {
-          const angle = (i / pointsPerRipple) * Math.PI * 2;
-          // 添加一些波动变化
-          const radialNoise =
-            Math.sin(angle * 8) * 1.5 + Math.cos(angle * 5) * 1.2;
-          const actualRadius = radius + radialNoise;
-
-          // 涟漪的x、z坐标
-          const x = actualRadius * Math.cos(angle);
-          const z = actualRadius * Math.sin(angle);
-
-          // 涟漪的y坐标（高度），形成波浪
-          const waveHeight = Math.sin(radius * 0.4) * 3;
-          const y = waveHeight + Math.sin(angle * 3) * 0.8;
-
-          positions.push(x, y, z);
-
-          // 根据半径大小调整点的大小
-          const sizeFactor = 1 - radius / maxRadius;
-          sizes.push(Math.random() * 0.6 + 0.3 + sizeFactor * 0.8);
-          pushShift();
-        }
-      }
-    };
-
-    // 创建飘散的粒子云
-    const createParticleCloud = () => {
-      const particleCount = 25000;
-      const cloudRadius = 50;
-
-      for (let i = 0; i < particleCount; i++) {
-        // 使用球面坐标创建更均匀的分布
-        const phi = Math.acos(2 * Math.random() - 1); // 均匀分布在[-1,1]
-        const theta = Math.random() * Math.PI * 2;
-
-        // 添加一些艺术化的分布
-        const r = cloudRadius * Math.pow(Math.random(), 0.5);
-
-        // 转换为直角坐标
-        const x = r * Math.sin(phi) * Math.cos(theta);
-        const y = r * Math.cos(phi);
-        const z = r * Math.sin(phi) * Math.sin(theta);
-
-        positions.push(x, y, z);
-
-        // 远离中心的粒子更小
-        const distFactor = 1 - r / cloudRadius;
-        sizes.push((Math.random() * 0.5 + 0.2) * distFactor);
-        pushShift();
-      }
-    };
-
-    // 创建连接的丝带线
-    const createSilkRibbons = () => {
-      const ribbonCount = 8;
-      const pointsPerRibbon = 500;
-
-      for (let r = 0; r < ribbonCount; r++) {
-        // 每条丝带的起始角度
-        const startAngle = (r / ribbonCount) * Math.PI * 2;
-
-        for (let i = 0; i < pointsPerRibbon; i++) {
-          const t = i / pointsPerRibbon;
-          // 螺旋参数
-          const radius = 5 + t * 35; // 丝带由内向外延伸
-          const heightScale = 15;
-          const rotations = 3; // 旋转次数
-
-          // 螺旋上升的角度
-          const angle = startAngle + t * Math.PI * 2 * rotations;
-
-          // 螺旋坐标
-          const x = radius * Math.cos(angle);
-          const z = radius * Math.sin(angle);
-
-          // 螺旋高度，加入波动
-          const y = Math.sin(t * Math.PI * 2) * heightScale;
-
-          positions.push(x, y, z);
-          sizes.push(Math.random() * 0.7 + 0.5);
-          pushShift();
-        }
-      }
-    };
-
-    // 调用创建函数
-    createButterflySculpture();
-    createRipples();
-    createSilkRibbons();
-    createParticleCloud();
+      pushShift();
+    }
 
     return {
       positions: new Float32Array(positions),
@@ -209,48 +95,48 @@ function StarField() {
         uniform float trebleEnergy;
         uniform float volume;
         attribute float sizes;
-        attribute vec4 shift;
+        attribute vec2 shift;
         varying vec3 vColor;
-        
-        void main() {
+          void main() {
           vec3 pos = position;
           float t = time;
           
-          // 使用低频能量影响粒子的位置
-          float moveT = mod(shift.x + shift.z * t + bassEnergy * 0.01, 6.28318530718);
-          float moveS = mod(shift.y + shift.z * t + midEnergy * 0.01, 6.28318530718);
+          // 多维度粒子运动 - 不同频段影响不同方向
+          // shift.x: 随机的起始位置
+          // shift.y: 随机的移动幅度
           
-          // 使用高频能量影响移动幅度
-          float amplitude = shift.w * (1.0 + trebleEnergy * 0.01);
+          // 低频(bassEnergy) - 影响Y轴(上下)运动，慢速大幅度
+          float bassMovement = sin(t * 0.8 + shift.x * 8.0) * 0.6;
+          pos.y += bassMovement * shift.y * (1.0 + bassEnergy * 0.02);
           
+<<<<<<< HEAD
           // 添加更有艺术感的运动
           float flowFactor = sin(pos.x * 0.05 + t) * cos(pos.z * 0.05 + t) * sin(pos.y * 0.05 + t * 0.7);
           
           pos += vec3(
             cos(moveS) * sin(moveT) + sin(t * 0.5 + pos.y * 0.1) * 0.2,
-            cos(moveT) + flowFactor * 0.3,
-            sin(moveS) * sin(moveT) + sin(t * 0.6 + pos.x * 0.1) * 0.2
-          ) * amplitude;
+          pos.z += trebleMovement * shift.y * (1.0 + trebleEnergy * 0.01);
+          
+          // 总音量影响整体运动幅度
+          pos *= (1.0 + volume * 0.0004);
           
           vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
           gl_Position = projectionMatrix * mvPosition;
-          
-          // 基于位置生成颜色 - 恢复初始蝴蝶花版本的颜色
-          float distFromCenter = length(pos.xz) / 60.0;
-          float heightFactor = abs(pos.y) / 30.0;
-          float colorMix = clamp(distFromCenter + heightFactor, 0.0, 1.0);
+            float d = length(abs(position) / vec3(40.0, 10.0, 40.0));
+          d = clamp(d, 0.0, 1.0);
+>>>>>>> 7cb42f72bc6832efdacd678776ed8fc0411b82d1
           
           // 使用音量和频率影响颜色
           vec3 colorA = mix(
-            vec3(0.1, 0.5, 1.0), // 蓝色基调
-            vec3(0.9, 0.3, 1.0), // 紫色调
-            bassEnergy * 0.008
+            vec3(1.0, 0.2, 0.2),    // 红色
+            vec3(0.89, 0.61, 0.0),  // 橙黄色
+            volume * 0.01
           );
           
           vec3 colorB = mix(
-            vec3(0.9, 0.6, 0.1), // 金色
-            vec3(1.0, 0.3, 0.2), // 红色
-            trebleEnergy * 0.008
+            vec3(0.2, 0.8, 1.0),    // 天蓝色
+            vec3(0.39, 0.20, 1.0),  // 蓝紫色
+            volume * 0.01
           );
           
           vColor = mix(colorA, colorB, colorMix);
@@ -307,9 +193,9 @@ function StarField() {
         />
         <bufferAttribute
           attach="attributes-shift"
-          count={shifts.length / 4}
+          count={shifts.length / 2}
           array={shifts}
-          itemSize={4}
+          itemSize={2}
         />
       </bufferGeometry>
     </points>

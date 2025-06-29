@@ -33,8 +33,8 @@ const SkyScene = () => {
             color={"#3cb1ff"}
           />
 
-          <group position={[0, 2, 0]} scale={3}>
-            <Avatar />
+          <group position={[0, 0, 0]} scale={3}>
+            <Avatar animationPath="/models/Piano.fbx" />
           </group>
 
           <OrbitControls enableDamping dampingFactor={0.05} enablePan={false} />

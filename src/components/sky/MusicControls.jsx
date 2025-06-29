@@ -5,9 +5,15 @@ import styles from "./MusicControls.module.css";
 const musicList = [
   {
     id: 1,
-    title: "Lucy Liu",
-    artist: "PSY.P",
-    file: "/mp3/Lucy Liu.mp3",
+    title: "Head In The Clouds",
+    artist: "Hayd",
+    file: "/mp3/Head In The Clouds.mp3",
+  },
+  {
+    id: 2,
+    title: "River Flows In You",
+    artist: "Yiruma",
+    file: "/mp3/river.mp3",
   },
 ];
 
@@ -156,6 +162,7 @@ const MusicControls = () => {
       const audioData = getAudioData();
       if (audioData) {
         // 发送自定义事件，包含音频数据
+        
         window.dispatchEvent(
           new CustomEvent("audioData", { detail: audioData })
         );
